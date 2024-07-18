@@ -47,25 +47,25 @@ def log_in(email: str, password: str) -> str:
     assert response.status_code == 200
     assert response.json() == mesage
 
-    sess_id = response.cookies.get("sess_id")
+    session_id = response.cookies.get("session_id")
 
-    return sess_id
+    return session_id
 
 
 def profile_unlogged() -> None:
     """ Test for validating profile request without log in """
     cookies = {
-        "sess_id": ""
+        "session_id": ""
     }
     response = requests.get(f'{BASE_URL}/profile', cookies=cookies)
 
     assert response.status_code == 403
 
 
-def profile_logged(sess_id: str) -> None:
+def profile_logged(session_id: str) -> None:
     """ Test for validating profile request logged in """
     cookies = {
-        "sess_id": sess_id
+        "session_id": session_id
     }
     response = requests.get(f'{BASE_URL}/profile', cookies=cookies)
 
@@ -75,10 +75,10 @@ def profile_logged(sess_id: str) -> None:
     assert response.json() == mesage
 
 
-def log_out(sess_id: str) -> None:
+def log_out(session_id: str) -> None:
     """ Test for validating log out endpoint """
     cookies = {
-        "sess_id": sess_id
+        "session_id": session_id
     }
     response = requests.delete(f'{BASE_URL}/sessions', cookies=cookies)
 
@@ -126,9 +126,9 @@ if __name__ == "__main__":
     register_user(EMAIL, PASSWD)
     log_in_wrong_password(EMAIL, NEW_PASSWD)
     profile_unlogged()
-    sess_id = log_in(EMAIL, PASSWD)
-    profile_logged(sess_id)
-    log_out(sess_id)
+    session_id = log_in(EMAIL, PASSWD)
+    profile_logged(session_id)
+    log_out(session_id)
     reset_token = reset_password_token(EMAIL)
     update_password(EMAIL, reset_token, NEW_PASSWD)
     log_in(EMAIL, NEW_PASSWD)

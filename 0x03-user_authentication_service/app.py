@@ -48,12 +48,12 @@ def log_in() -> str:
     if not AUTH.valid_login(email, password):
         abort(401)
 
-    sess_id = AUTH.create_session(email)
+    session_id = AUTH.create_session(email)
 
     mesage = {"email": email, "message": "logged in"}
     response = jsonify(mesage)
 
-    response.set_cookie("sess_id", sess_id)
+    response.set_cookie("session_id", session_id)
 
     return response
 
@@ -64,12 +64,12 @@ def log_out() -> str:
     If the user exists destroy the session and redirect the user to GET /.
     If the user does not exist, respond with a 403 HTTP status.
     """
-    sess_id = request.cookies.get("sess_id", None)
+    session_id = request.cookies.get("session_id", None)
 
-    if sess_id is None:
+    if session_id is None:
         abort(403)
 
-    user = AUTH.get_user_from_sess_id(sess_id)
+    user = AUTH.get_user_from_session_id(session_id)
 
     if user is None:
         abort(403)
@@ -84,12 +84,12 @@ def profile() -> str:
     """ If the user exist, respond with a 200 HTTP status and a JSON Payload
     Otherwise respond with a 403 HTTP status.
     """
-    sess_id = request.cookies.get("sess_id", None)
+    session_id = request.cookies.get("session_id", None)
 
-    if sess_id is None:
+    if session_id is None:
         abort(403)
 
-    user = AUTH.get_user_from_sess_id(sess_id)
+    user = AUTH.get_user_from_session_id(session_id)
 
     if user is None:
         abort(403)
