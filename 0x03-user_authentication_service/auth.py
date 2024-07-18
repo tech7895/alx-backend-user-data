@@ -66,21 +66,21 @@ class Auth:
         except NoResultFound:
             return None
 
-        session_id = _generate_uuid()
+        sess_id = _generate_uuid()
 
-        self._db.update_user(user.id, session_id=session_id)
+        self._db.update_user(user.id, sess_id=sess_id)
 
-        return session_id
+        return sess_id
 
-    def get_user_from_session_id(self, session_id: str) -> Union[str, None]:
-        """It takes a single session_id string argument
+    def get_user_from_sess_id(self, sess_id: str) -> Union[str, None]:
+        """It takes a single sess_id string argument
         Returns a string or None
         """
-        if session_id is None:
+        if sess_id is None:
             return None
 
         try:
-            user = self._db.find_user_by(session_id=session_id)
+            user = self._db.find_user_by(sess_id=sess_id)
         except NoResultFound:
             return None
 
@@ -93,7 +93,7 @@ class Auth:
         except NoResultFound:
             return None
 
-        self._db.update_user(user.id, session_id=None)
+        self._db.update_user(user.id, sess_id=None)
 
         return None
 

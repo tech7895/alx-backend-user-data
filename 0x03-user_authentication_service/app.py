@@ -14,8 +14,8 @@ AUTH = Auth()
 @app.route('/', methods=['GET'])
 def hello_world() -> str:
     """ Base route for authentication service API """
-    msg = {"message": "Bienvenue"}
-    return jsonify(msg)
+    mesage = {"message": "Bienvenue"}
+    return jsonify(mesage)
 
 
 @app.route('/users', methods=['POST'])
@@ -32,8 +32,8 @@ def register_user() -> str:
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
 
-    msg = {"email": email, "message": "user created"}
-    return jsonify(msg)
+    mesage = {"email": email, "message": "user created"}
+    return jsonify(mesage)
 
 
 @app.route('/sessions', methods=['POST'])
@@ -48,12 +48,12 @@ def log_in() -> str:
     if not AUTH.valid_login(email, password):
         abort(401)
 
-    session_id = AUTH.create_session(email)
+    sess_id = AUTH.create_session(email)
 
-    msg = {"email": email, "message": "logged in"}
-    response = jsonify(msg)
+    mesage = {"email": email, "message": "logged in"}
+    response = jsonify(mesage)
 
-    response.set_cookie("session_id", session_id)
+    response.set_cookie("sess_id", sess_id)
 
     return response
 
@@ -64,12 +64,12 @@ def log_out() -> str:
     If the user exists destroy the session and redirect the user to GET /.
     If the user does not exist, respond with a 403 HTTP status.
     """
-    session_id = request.cookies.get("session_id", None)
+    sess_id = request.cookies.get("sess_id", None)
 
-    if session_id is None:
+    if sess_id is None:
         abort(403)
 
-    user = AUTH.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_sess_id(sess_id)
 
     if user is None:
         abort(403)
@@ -84,19 +84,19 @@ def profile() -> str:
     """ If the user exist, respond with a 200 HTTP status and a JSON Payload
     Otherwise respond with a 403 HTTP status.
     """
-    session_id = request.cookies.get("session_id", None)
+    sess_id = request.cookies.get("sess_id", None)
 
-    if session_id is None:
+    if sess_id is None:
         abort(403)
 
-    user = AUTH.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_sess_id(sess_id)
 
     if user is None:
         abort(403)
 
-    msg = {"email": user.email}
+    mesage = {"email": user.email}
 
-    return jsonify(msg), 200
+    return jsonify(mesage), 200
 
 
 @app.route('/reset_password', methods=['POST'])
@@ -115,9 +115,9 @@ def reset_password() -> str:
     except ValueError:
         abort(403)
 
-    msg = {"email": email, "reset_token": reset_token}
+    mesage = {"email": email, "reset_token": reset_token}
 
-    return jsonify(msg), 200
+    return jsonify(mesage), 200
 
 
 @app.route('/reset_password', methods=['PUT'])
@@ -141,8 +141,8 @@ def update_password() -> str:
     except ValueError:
         abort(403)
 
-    msg = {"email": email, "message": "Password updated"}
-    return jsonify(msg), 200
+    mesage = {"email": email, "message": "Password updated"}
+    return jsonify(mesage), 200
 
 
 if __name__ == "__main__":

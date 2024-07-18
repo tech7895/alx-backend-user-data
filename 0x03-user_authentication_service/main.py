@@ -17,10 +17,10 @@ def register_user(email: str, password: str) -> None:
     }
     response = requests.post(f'{BASE_URL}/users', data=data)
 
-    msg = {"email": email, "message": "user created"}
+    mesage = {"email": email, "message": "user created"}
 
     assert response.status_code == 200
-    assert response.json() == msg
+    assert response.json() == mesage
 
 
 def log_in_wrong_password(email: str, password: str) -> None:
@@ -42,50 +42,50 @@ def log_in(email: str, password: str) -> str:
     }
     response = requests.post(f'{BASE_URL}/sessions', data=data)
 
-    msg = {"email": email, "message": "logged in"}
+    mesage = {"email": email, "message": "logged in"}
 
     assert response.status_code == 200
-    assert response.json() == msg
+    assert response.json() == mesage
 
-    session_id = response.cookies.get("session_id")
+    sess_id = response.cookies.get("sess_id")
 
-    return session_id
+    return sess_id
 
 
 def profile_unlogged() -> None:
     """ Test for validating profile request without log in """
     cookies = {
-        "session_id": ""
+        "sess_id": ""
     }
     response = requests.get(f'{BASE_URL}/profile', cookies=cookies)
 
     assert response.status_code == 403
 
 
-def profile_logged(session_id: str) -> None:
+def profile_logged(sess_id: str) -> None:
     """ Test for validating profile request logged in """
     cookies = {
-        "session_id": session_id
+        "sess_id": sess_id
     }
     response = requests.get(f'{BASE_URL}/profile', cookies=cookies)
 
-    msg = {"email": EMAIL}
+    mesage = {"email": EMAIL}
 
     assert response.status_code == 200
-    assert response.json() == msg
+    assert response.json() == mesage
 
 
-def log_out(session_id: str) -> None:
+def log_out(sess_id: str) -> None:
     """ Test for validating log out endpoint """
     cookies = {
-        "session_id": session_id
+        "sess_id": sess_id
     }
     response = requests.delete(f'{BASE_URL}/sessions', cookies=cookies)
 
-    msg = {"message": "Bienvenue"}
+    mesage = {"message": "Bienvenue"}
 
     assert response.status_code == 200
-    assert response.json() == msg
+    assert response.json() == mesage
 
 
 def reset_password_token(email: str) -> str:
@@ -99,9 +99,9 @@ def reset_password_token(email: str) -> str:
 
     reset_token = response.json().get("reset_token")
 
-    msg = {"email": email, "reset_token": reset_token}
+    mesage = {"email": email, "reset_token": reset_token}
 
-    assert response.json() == msg
+    assert response.json() == mesage
 
     return reset_token
 
@@ -115,10 +115,10 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
     }
     response = requests.put(f'{BASE_URL}/reset_password', data=data)
 
-    msg = {"email": email, "message": "Password updated"}
+    mesage = {"email": email, "message": "Password updated"}
 
     assert response.status_code == 200
-    assert response.json() == msg
+    assert response.json() == mesage
 
 
 if __name__ == "__main__":
@@ -126,9 +126,9 @@ if __name__ == "__main__":
     register_user(EMAIL, PASSWD)
     log_in_wrong_password(EMAIL, NEW_PASSWD)
     profile_unlogged()
-    session_id = log_in(EMAIL, PASSWD)
-    profile_logged(session_id)
-    log_out(session_id)
+    sess_id = log_in(EMAIL, PASSWD)
+    profile_logged(sess_id)
+    log_out(sess_id)
     reset_token = reset_password_token(EMAIL)
     update_password(EMAIL, reset_token, NEW_PASSWD)
     log_in(EMAIL, NEW_PASSWD)
